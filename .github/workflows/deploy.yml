@@ -1,0 +1,25 @@
+name: DeployInfra
+
+on: [workflow_dispatch]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: repo
+    - uses: azure/login@v1
+      with:
+        client-id: ${{ env.AZURE_CREDENTIALS }}        
+        subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+    - uses: azure/arm-deploy@v1
+      with:
+        resourceGroupName: ${{ env.AZURE_RG }}
+        template: ./deploy/main.bicep
+        
