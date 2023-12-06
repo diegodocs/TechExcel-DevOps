@@ -14,12 +14,16 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: repo
-    - uses: azure/login@v1
+    - name: Azure login
+      uses: azure/login@v1
       with:
-        client-id: ${{ env.AZURE_CREDENTIALS }}        
-        subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
-    - uses: azure/arm-deploy@v1
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+  
+    - name: Azure CLI script
+      uses: azure/CLI@v1
       with:
-        resourceGroupName: ${{ env.AZURE_RG }}
-        template: ./deploy/main.bicep
-        
+          azcliversion: latest
+          inlineScript: |
+            az account show
